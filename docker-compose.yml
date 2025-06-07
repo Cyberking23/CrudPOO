@@ -1,25 +1,27 @@
 version: '3.8'
 
 services:
+  # Servicio web que ejecuta la aplicación PHP con Apache
   web:
-    build: .
+    build: . # Construye la imagen usando el Dockerfile en el directorio actual
     ports:
-      - "8080:80"
+      - "8080:80" # Mapea el puerto 80 del contenedor al 8080 del host
     volumes:
-      - ./src:/var/www/html
+      - ./src:/var/www/html # Sincroniza el código fuente local con el contenedor
     depends_on:
-      - db
+      - db # Espera a que el servicio de base de datos esté listo antes de iniciar
 
+  # Servicio de base de datos MySQL
   db:
-    image: mysql:8.0
+    image: mysql:8.0 # Usa la imagen oficial de MySQL versión 8.0
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: proyectopoo
+      MYSQL_ROOT_PASSWORD: root # Contraseña del usuario root de MySQL
+      MYSQL_DATABASE: proyectopoo # Base de datos que se creará al iniciar el contenedor
     ports:
-      - "3307:3306"
+      - "3307:3306" # Mapea el puerto 3306 del contenedor al 3307 del host
     volumes:
-      - db_data:/var/lib/mysql
-      - ./sql/proyectopoo.sql:/docker-entrypoint-initdb.d/proyectopoo.sql
+      - db_data:/var/lib/mysql # Persiste los datos de la base de datos en un volumen
+      - ./sql/proyectopoo.sql:/docker-entrypoint-initdb.d/proyectopoo.sql # Inicializa la base de datos con un script SQL
 
 volumes:
-  db_data:
+  db_data: # Define el volumen para almacenar los datos de MySQL

@@ -1,25 +1,27 @@
 FROM php:8.2-apache
 
-# Set the working directory
+# Usa la imagen oficial de PHP 8.2 con Apache como base
+
+# Establece el directorio de trabajo dentro del contenedor
 WORKDIR /var/www/html
 
-# Enable Apache mod_rewrite
+# Habilita el módulo mod_rewrite de Apache para permitir URLs amigables
 RUN a2enmod rewrite
 
-# Copy the application files into the container
+# Copia los archivos de la aplicación desde la carpeta src/ al contenedor
 COPY src/ .
 
-# Set proper permissions for Apache
+# Asigna los permisos adecuados a los archivos para el usuario y grupo de Apache
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
-# AllowOverride All
+# Permite el uso de .htaccess cambiando AllowOverride a All en la configuración de Apache
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
-# Install MySQL extension for PHP
+# Instala las extensiones de PHP necesarias para trabajar con MySQL mediante PDO
 RUN docker-php-ext-install pdo pdo_mysql
 
-# Expose port 80
+# Expone el puerto 80 para acceder a la aplicación web
 EXPOSE 80
 
-# Start the Apache server
+# Comando por defecto para iniciar el servidor Apache en primer plano
 CMD ["apache2-foreground"]
